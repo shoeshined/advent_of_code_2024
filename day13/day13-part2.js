@@ -1,20 +1,14 @@
 import { readFileSync } from "fs";
 
-function gcd(a, b) {
-	return !b ? a : gcd(b, a % b);
-}
-
-function findIntercept([x, y, c], [x1, y1, c1]) {
-	if (x / y === x1 / y1) return false;
-	let xint = (c1 * y - c * y1) / (x1 * y - x * y1),
-		yint = (c - x * xint) / y;
-	return [xint, yint];
+function findIntercept([a, b, c], [a1, b1, c1]) {
+	if (a / b === a1 / b1) return false;
+	let x = (c1 * b - c * b1) / (a1 * b - a * b1),
+		y = (c - a * x) / b;
+	return [x, y];
 }
 
 function checker(ax, ay, bx, by, goalx, goaly) {
 	(goalx += 10 ** 13), (goaly += 10 ** 13);
-	if (goalx % gcd(ax, bx) !== 0 || goaly % gcd(ay, by) !== 0) return 0;
-
 	let int = findIntercept([ax, bx, goalx], [ay, by, goaly]);
 	return int.every(n => n >= 0 && Number.isInteger(n))
 		? int[0] * 3 + int[1]

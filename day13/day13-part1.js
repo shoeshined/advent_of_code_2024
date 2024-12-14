@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 
-function checker([ax, ay], [bx, by], [goalx, goaly]) {
+function checker(ax, ay, bx, by, goalx, goaly) {
 	for (let a = 0; a <= 100; a++) {
 		for (let b = 0; b <= 100; b++) {
 			if (a * ax + b * bx === goalx && a * ay + b * by === goaly)
@@ -15,13 +15,7 @@ const input = readFileSync(import.meta.dirname + "/day13-input.txt", {
 })
 	.trim()
 	.split("\r\n\r\n")
-	.map(block =>
-		block.split("\r\n").map((line, ind) => {
-			return line
-				.split(", ")
-				.map(part => parseInt(part.split(ind === 2 ? "=" : "+")[1]));
-		})
-	)
+	.map(block => block.match(/[0-9]+/g).map(x => parseInt(x)))
 	.reduce((prev, block) => prev + checker(...block), 0);
 
 console.log(input);

@@ -28,8 +28,8 @@ function findIntercept([x, y, a, b], [x1, y1, a1, b1]) {
 
 function checker([ax, ay], [bx, by], [goalx, goaly]) {
 	(goalx += 10000000000000), (goaly += 10000000000000);
-
 	if (goalx % gcd(ax, bx) !== 0 || goaly % gcd(ay, by) !== 0) return 0;
+
 	let intercept = findIntercept(dioph(ax, bx, goalx), dioph(ay, by, goaly));
 
 	let int = intercept.map(n => {

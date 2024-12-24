@@ -10,31 +10,36 @@ function direct(dir, y, x) {
 		: [y, x - 1];
 }
 
-function nav(plot, coords, cost, record, dir = 1) {
-	if (coords.toString() === exit.toString())
-		return { cost, path: [exit.toString()] };
-	if (
-		plot[coords.toString()] ||
-		cost >= (record[coords.toString()] ?? Infinity) ||
-		coords[0] < 0 ||
-		coords[0] > exit[0] ||
-		coords[1] < 0 ||
-		coords[1] > exit[1]
-	)
-		return { cost: Infinity };
-	record[coords.toString()] = cost;
-	return [0, 1, 3]
-		.map(d => {
-			d = (dir + d) % 4;
-			return nav(plot, direct(d, ...coords), cost + 1, record, d);
-		})
-		.reduce(
-			(prev, cur) =>
-				cur.cost < prev.cost
-					? { cost: cur.cost, path: [coords.toString(), ...cur.path] }
-					: prev,
-			{ cost: Infinity }
-		);
+function bfs(end, plot) {
+	let queue = [],
+		visited = {};
+	queue.push({ coords: [0, 0], score: 0, path: [] });
+
+	while (queue.length > 0) {
+		const item = queue.shift();
+		const [x, y] = item.coords;
+		if (x === end[0] && y === end[1]) return item;
+		if (item.score >= (visited[`${x},${y}`] ?? Infinity)) continue;
+
+		visited[`${x},${y}`] = item.score;
+
+		[0, 1, 2, 3].forEach(d => {
+			let [y1, x1] = direct(d, y, x);
+			if (
+				!plot.has(`${x},${y}`) &&
+				x1 >= 0 &&
+				x1 <= end[0] &&
+				y1 >= 0 &&
+				y1 <= end[1]
+			)
+				queue.push({
+					coords: [x1, y1],
+					score: item.score + 1,
+					path: [...item.path, `${x},${y}`],
+				});
+		});
+	}
+	return { path: false };
 }
 
 const input = readFileSync(import.meta.dirname + "/day18-input.txt", {
@@ -44,28 +49,18 @@ const input = readFileSync(import.meta.dirname + "/day18-input.txt", {
 	.split("\r\n")
 	.map(line => line.split(",").map(n => parseInt(n)));
 
-let path = [],
-	plot = {},
-	results,
-	gridSize = 70,
-	startList = 1024;
-const exit = [gridSize, gridSize];
-for (let i = 0; i < input.length; i++) {
-	let record = {};
-	if (i < startList) {
-		plot[input[i].toString()] = true;
-	} else {
-		if (i === startList) {
-			path = nav(plot, [0, 0], 0, record).path;
-			record = {};
-		}
-		plot[input[i].toString()] = true;
-		if (path.includes(input[i].toString())) {
-			path = nav(plot, [0, 0], 0, record).path;
-			if (!path) {
-				results = input[i].toString();
-				break;
-			}
+const exit = [70, 70],
+	plot = new Set(input.slice(0, 1024).map(a => a.toString()));
+let path = bfs(exit, plot).path,
+	results;
+
+for (let i = 1024; i < input.length; i++) {
+	plot.add(input[i].toString());
+	if (path.includes(input[i].toString())) {
+		path = bfs(exit, plot).path;
+		if (!path) {
+			results = input[i].toString();
+			break;
 		}
 	}
 }

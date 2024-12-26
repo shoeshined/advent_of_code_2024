@@ -24,8 +24,6 @@ const [tows, paterns] = readFileSync(import.meta.dirname + "/day19-input.txt", {
 	.map(line => line.match(/[a-z]+/g));
 
 const cashe = new Map();
-const results = paterns
-	.map(patern => checker(patern, tows, cashe))
-	.reduce((y, x) => y + x, 0);
+const results = paterns.reduce((y, pat) => y + checker(pat, tows, cashe), 0);
 
 console.log(results);

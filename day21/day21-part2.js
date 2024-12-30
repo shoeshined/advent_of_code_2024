@@ -55,7 +55,7 @@ function numloop(code, rep, times = 0, prev = "", start = "A", first = true) {
 			(!times || begin.toString() !== "0,0") &&
 			print[0] === ">")
 	)
-		print = print.toReversed();
+		print.reverse();
 
 	const options = numloop(
 		code.substring(1),
@@ -91,17 +91,13 @@ const patMatch = new Map();
 
 numloop(input[0], 3)
 	.match(/[^A]*A/g)
-	.forEach(s => {
-		patMatch.set(s);
-	});
+	.forEach(s => patMatch.set(s));
 
 patMatch.forEach((_, s) => {
 	const expand = new Map();
 	numloop(s, 1, 1)
 		.match(/[^A]*A/g)
-		.forEach(t => {
-			expand.set(t, expand.get(t) + 1 || 1);
-		});
+		.forEach(t => expand.set(t, expand.get(t) + 1 || 1));
 	patMatch.set(s, expand);
 });
 
@@ -109,9 +105,7 @@ const results = input.reduce((count, line) => {
 	const firstStep = new Map();
 	numloop(line, 2)
 		.match(/[^A]*A/g)
-		.forEach(t => {
-			firstStep.set(t, firstStep.get(t) + 1 || 1);
-		});
+		.forEach(t => firstStep.set(t, firstStep.get(t) + 1 || 1));
 
 	return (
 		count +

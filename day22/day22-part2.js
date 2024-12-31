@@ -6,6 +6,7 @@ function prune(n) {
 
 function hash(n, times, map) {
 	let list = [[n % 10, 0]],
+		key = [],
 		reached = new Set();
 
 	for (let i = 0; i < times; i++) {
@@ -13,9 +14,10 @@ function hash(n, times, map) {
 		n = prune(Math.floor(n / 32) ^ n);
 		n = prune((n * 2048) ^ n);
 		list.push([n % 10, (n % 10) - list.at(-1)[0]]);
+		key.push(list.at(-1)[1]);
 
 		if (i > 3) {
-			let y = [3, 2, 1, 0].map(j => list[i - j + 1][1]).join("");
+			let y = key.slice(-4).join("");
 			if (!reached.has(y)) {
 				reached.add(y);
 				map.set(y, map.get(y) + (n % 10) || n % 10);

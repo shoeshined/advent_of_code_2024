@@ -8,12 +8,9 @@ const input = readFileSync(import.meta.dirname + "/day23-input.txt", {
 
 const record = new Map();
 input.forEach(line => {
-	line.split("-").forEach((cpu, i, array) => {
-		let lan = array[(i + 1) % 2];
-		record.has(cpu)
-			? record.get(cpu).add(lan)
-			: record.set(cpu, new Set([lan]));
-	});
+	let [a, b] = line.split("-");
+	record.set(a, record.get(a)?.add(b) ?? new Set([b]));
+	record.set(b, record.get(b)?.add(a) ?? new Set([a]));
 });
 
 const loops = new Set();

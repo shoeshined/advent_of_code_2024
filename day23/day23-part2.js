@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 
 function connect(input) {
 	const record = new Map();
-	input.map(line => {
+	input.forEach(line => {
 		let [a, b] = line.split("-");
 		record.set(a, record.get(a)?.add(b) ?? new Set([b]));
 		record.set(b, record.get(b)?.add(a) ?? new Set([a]));

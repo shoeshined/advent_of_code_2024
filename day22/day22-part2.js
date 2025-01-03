@@ -16,7 +16,7 @@ function hash(n, times, map) {
 		list.push([n % 10, (n % 10) - list.at(-1)[0]]);
 		key.push(list.at(-1)[1]);
 
-		if (i > 3) {
+		if (i > 2) {
 			let y = key.slice(-4).join("");
 			if (!reached.has(y)) {
 				reached.add(y);
